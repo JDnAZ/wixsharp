@@ -3208,7 +3208,12 @@
             Application ID containing Distributed COM (DCOM) information for the associated application GUID.
             </summary>
         </member>
-        <member name="F:WixSharp.AppId.Id">
+        <member name="M:WixSharp.AppId.#ctor">
+            <summary>
+            Creates a new <see cref="T:WixSharp.AppId"/> element.
+            </summary>
+        </member>
+        <member name="P:WixSharp.AppId.Id">
             <summary>
             The GUID that corresponds to the named executable.
             </summary>
@@ -3267,6 +3272,7 @@
             Serializes class into WiX document.
             </summary>
             <param name="context">Processing context for WiX Document.</param>
+            <exception cref="T:WixSharp.ValidationException"></exception>
         </member>
         <member name="T:WixSharp.ComRegistration">
             <summary>
@@ -3305,7 +3311,12 @@
             <seealso cref="T:WixSharp.WixEntity" />
             <seealso cref="T:WixSharp.IGenericEntity" />
         </member>
-        <member name="F:WixSharp.ComRegistration.Id">
+        <member name="M:WixSharp.ComRegistration.#ctor">
+            <summary>
+            Creates a new COM class registration entity.
+            </summary>
+        </member>
+        <member name="P:WixSharp.ComRegistration.Id">
             <summary>
             The Class identifier (CLSID) of a COM server.
             </summary>
@@ -3429,6 +3440,11 @@
             May only be specified if the value of the Advertise attribute is "no" and the ForeignServer attribute is not specified. File Id of the COM server file. If this element is nested under a File element, this value defaults to the value of the parent File/@Id.
             </summary>
         </member>
+        <member name="F:WixSharp.ComRegistration.Version">
+            <summary>
+            Version for the CLSID.
+            </summary>
+        </member>
         <member name="F:WixSharp.ComRegistration.ProgIds">
             <summary>
             ProgId(s) associated with Class must be a child element of the ClassRegistration instance.
@@ -3441,23 +3457,24 @@
         </member>
         <member name="M:WixSharp.ComRegistration.Process(WixSharp.ProcessingContext)">
             <summary>
-            The method demonstrates the correct way of integrating RemoveFolderEx.
-            <para>
-            The sample also shows various XML manipulation techniques available with Fluent XElement extensions:
-            <para>- Auto XML serialization of CLR object with serializable members marked with XMLAttribute.</para>
-            <para>- XML namespace-transparent lookup method FindSingle.</para>
-            </para>
+            Serializes class into WiX document.
             </summary>
-            <param name="context"></param>
+            <param name="context">Processing context for WiX Document.</param>
+            <exception cref="T:WixSharp.ValidationException"></exception>
         </member>
         <member name="T:WixSharp.ProgId">
             <summary>
-            ProgId registration. If ProgId has an associated Class, it must be a child of that element.
+            COM ProgId registration. If ProgId has an associated Class, it must be a child of that element.
             </summary>
         </member>
-        <member name="F:WixSharp.ProgId.Id">
+        <member name="M:WixSharp.ProgId.#ctor">
             <summary>
-            Not available from WiX documentation.
+            Creates a new COM ProgId registration.
+            </summary>
+        </member>
+        <member name="P:WixSharp.ProgId.Id">
+            <summary>
+            COM Class ProgId.
             </summary>
         </member>
         <member name="F:WixSharp.ProgId.Advertise">
@@ -3492,18 +3509,168 @@
             Child ProgId(s) associated with the instance of <c>ProgId</c>.
             </summary>
         </member>
-        <member name="M:WixSharp.ProgId.ToXElement">
+        <member name="F:WixSharp.ProgId.Extensions">
             <summary>
-            Serializes the class instance into XML element.
+            File extensions that refer to this ProgId, including MIME type and Verb data.
             </summary>
-            <returns></returns>
+        </member>
+        <member name="M:WixSharp.ProgId.Process(WixSharp.ProcessingContext)">
+            <summary>
+            Adds itself as an XML content into the WiX source being generated from the <see cref="T:WixSharp.Project" />.
+            See 'Wix#/samples/Extensions' sample for the details on how to implement this interface correctly.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="T:WixSharp.Extension">
+            <summary>
+            Associates a Component or COM ProgID with a file extension or system action.
+            </summary>
+        </member>
+        <member name="M:WixSharp.Extension.#ctor">
+            <summary>
+            Creates a new file extension association.
+            </summary>
+        </member>
+        <member name="P:WixSharp.Extension.Id">
+            <summary>
+            This is simply the file extension, like "doc" or "xml". Do not include the preceding period.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Extension.Advertise">
+            <summary>
+            Whether this extension is to be advertised. The default is no.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Extension.ContentType">
+            <summary>
+            The MIME type that is to be written.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Extension.GenericEntities">
+            <summary>
+            Extensibility point in the WiX XML Schema.
+            Schema extensions can register additional attributes at this point in the schema.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Extension.MIMETypes">
+            <summary>
+            MIME content-types for an <see cref="T:WixSharp.Extension"/>.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Extension.Verbs">
+            <summary>
+            Verb definitions for an <see cref="T:WixSharp.Extension"/>.
+            </summary>
+        </member>
+        <member name="M:WixSharp.Extension.Process(WixSharp.ProcessingContext)">
+            <summary>
+            Adds itself as an XML content into the WiX source being generated from the <see cref="T:WixSharp.Project" />.
+            See 'Wix#/samples/Extensions' sample for the details on how to implement this interface correctly.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="T:WixSharp.Verb">
+            <summary>
+            Verb definition for an Extension. When advertised, this element creates a row in the Verb table. When not advertised, this element creates the appropriate rows in Registry table.
+            </summary>
+        </member>
+        <member name="M:WixSharp.Verb.#ctor">
+            <summary>
+            Creates a new Verb definition for an <see cref="T:WixSharp.Extension"/>.
+            </summary>
+        </member>
+        <member name="P:WixSharp.Verb.Id">
+            <summary>
+            The verb for the command.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Verb.Argument">
+            <summary>
+            The value for command arguments.
+            </summary>
+            <remarks>
+            The resolution of properties in the Argument field is limited.
+            A property formatted as [Property] in this field can only be resolved if the property already has the intended value when the component owning the verb is installed.
+            For example, for the argument "[#MyDoc.doc]" to resolve to the correct value, the same process must be installing the file MyDoc.doc and the component that owns the verb.
+            </remarks>
+        </member>
+        <member name="F:WixSharp.Verb.Command">
+            <summary>
+            The localized text displayed on the context menu.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Verb.Sequence">
+            <summary>
+            The sequence of the commands.
+            </summary>
+            <remarks>
+            Only verbs for which the Sequence is specified are used to prepare an ordered list for the default value of the shell key.
+            The Verb with the lowest value in this column becomes the default verb. Used only for Advertised verbs.
+            </remarks>
+        </member>
+        <member name="F:WixSharp.Verb.TargetFile">
+            <summary>
+            Either this attribute or the <see cref="F:WixSharp.Verb.TargetProperty"/> attribute must be specified for a non-advertised verb. The value should be the identifier of the target file to be executed for the verb.
+            </summary>
+        </member>
+        <member name="F:WixSharp.Verb.TargetProperty">
+            <summary>
+            Either this attribute or the <see cref="F:WixSharp.Verb.TargetFile"/> attribute must be specified for a non-advertised verb.
+            The value should be the identifier of the property which will resolve to the path to the target file to be executed for the verb.
+            </summary>
+        </member>
+        <member name="M:WixSharp.Verb.Process(WixSharp.ProcessingContext)">
+            <summary>
+            Adds itself as an XML content into the WiX source being generated from the <see cref="T:WixSharp.Project" />.
+            See 'Wix#/samples/Extensions' sample for the details on how to implement this interface correctly.
+            </summary>
+            <param name="context">The context.</param>
+            <exception cref="T:WixSharp.ValidationException"></exception>
+        </member>
+        <member name="T:WixSharp.MimeType">
+            <summary>
+            MIME content-type for an Extension
+            </summary>
+        </member>
+        <member name="F:WixSharp.MimeType.Advertise">
+            <summary>
+            Whether this MIME is to be advertised. The default is to match whatever the parent extension element uses.
+            If the parent element is not advertised, then this element cannot be advertised either.
+            </summary>
+        </member>
+        <member name="F:WixSharp.MimeType.COMClassId">
+            <summary>
+            Class ID for the COM server that is to be associated with the MIME content.
+            </summary>
+        </member>
+        <member name="F:WixSharp.MimeType.ContentType">
+            <summary>
+            This is the identifier for the MIME content. It is commonly written in the form of: type/format.
+            </summary>
+        </member>
+        <member name="F:WixSharp.MimeType.Default">
+            <summary>
+            If 'yes', become the content type for the parent Extension. The default value is 'no'.
+            </summary>
+        </member>
+        <member name="M:WixSharp.MimeType.Process(WixSharp.ProcessingContext)">
+            <summary>
+            Adds itself as an XML content into the WiX source being generated from the <see cref="T:WixSharp.Project" />.
+            See 'Wix#/samples/Extensions' sample for the details on how to implement this interface correctly.
+            </summary>
+            <param name="context">The context.</param>
         </member>
         <member name="T:WixSharp.Interface">
             <summary>
             COM Interface registration for parent Class.
             </summary>
         </member>
-        <member name="F:WixSharp.Interface.Id">
+        <member name="M:WixSharp.Interface.#ctor">
+            <summary>
+            Creates a new COM Interface registration.
+            </summary>
+        </member>
+        <member name="P:WixSharp.Interface.Id">
             <summary>
             GUID identifier for COM Interface.
             </summary>
@@ -3513,7 +3680,7 @@
             Identifies the interface from which the current interface is derived.
             </summary>
         </member>
-        <member name="F:WixSharp.Interface.Name">
+        <member name="P:WixSharp.Interface.Name">
             <summary>
             Name for COM Interface.
             </summary>
@@ -3538,11 +3705,12 @@
             Determines whether a Typelib version entry should be created with the other COM Interface registry keys. Default is 'yes'.
             </summary>
         </member>
-        <member name="M:WixSharp.Interface.ToXElement">
+        <member name="M:WixSharp.Interface.Process(WixSharp.ProcessingContext)">
             <summary>
-            Serializes the class instance into XML element.
+            Adds itself as an XML content into the WiX source being generated from the <see cref="T:WixSharp.Project" />.
+            See 'Wix#/samples/Extensions' sample for the details on how to implement this interface correctly.
             </summary>
-            <returns></returns>
+            <param name="context">The context.</param>
         </member>
         <member name="T:WixSharp.TypeLib">
             <summary>
@@ -3587,9 +3755,14 @@
             <seealso cref="T:WixSharp.WixEntity" />
             <seealso cref="T:WixSharp.IGenericEntity" />
         </member>
-        <member name="F:WixSharp.TypeLib.Id">
+        <member name="M:WixSharp.TypeLib.#ctor">
             <summary>
-            The GUID that identifes the type library.
+            Creates a new TypeLib registration.
+            </summary>
+        </member>
+        <member name="P:WixSharp.TypeLib.Id">
+            <summary>
+            The GUID that identifies the type library.
             </summary>
         </member>
         <member name="F:WixSharp.TypeLib.Advertise">
@@ -3677,6 +3850,7 @@
             </para>
             </summary>
             <param name="context"></param>
+            <exception cref="T:WixSharp.ValidationException"></exception>
         </member>
         <member name="T:WixSharp.CopyFile">
             <summary>

@@ -1,4 +1,5 @@
 using Microsoft.Deployment.WindowsInstaller;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -66,7 +67,8 @@ namespace WixSharp.UI.WPF
         {
             string translate(string text)
                 => runtime.Localize(text.Trim('[', ']'))
-                          .TrimStart('&'); // trim buttons text "&Next"
+                          .Replace("&", "")
+                          .LocalizeWith(runtime.Localize); // trim buttons text "&Next"
             bool isLocalizable(string text)
                 => text.StartsWith("[") && text.EndsWith("]");
 
@@ -300,6 +302,53 @@ namespace WixSharp.UI.WPF
         {
             if (content is IManagedDialog)
                 (this.content as IManagedDialog).Shell = this.Shell;
+        }
+
+        public override void OnExecuteStarted()
+        {
+            if (content is IManagedDialog)
+            {
+                (content as IManagedDialog).OnExecuteStarted();
+            }
+        }
+
+        public override void OnExecuteComplete()
+        {
+            if (content is IManagedDialog)
+            {
+                (content as IManagedDialog).OnExecuteComplete();
+            }
+        }
+
+        public override void OnProgress(int progressPercentage)
+        {
+            if (content is IManagedDialog)
+            {
+                try
+                {
+                    (content as IManagedDialog).OnProgress(progressPercentage);
+                }
+                catch (Exception error)
+                {
+                    Runtime.Session.Log(error.Message);
+                }
+            }
+        }
+
+        public override MessageResult ProcessMessage(InstallMessage messageType, Record messageRecord, MessageButtons buttons, MessageIcon icon, MessageDefaultButton defaultButton)
+        {
+            if (content is IManagedDialog)
+            {
+                try
+                {
+                    return (content as IManagedDialog).ProcessMessage(messageType, messageRecord, buttons, icon, defaultButton);
+                }
+                catch (Exception error)
+                {
+                    Runtime.Session.Log(error.Message);
+                }
+            }
+            return base.ProcessMessage(messageType, messageRecord, buttons, icon, defaultButton);
         }
     }
 }
